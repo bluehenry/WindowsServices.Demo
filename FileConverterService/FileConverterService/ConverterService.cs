@@ -15,13 +15,28 @@ namespace FileConverterService
         private static readonly LogWriter _log = HostLogger.Get<ConverterService>();
         public bool Start()
         {
-            _watcher = new FileSystemWatcher(@"c:\temp\a", "*_in.txt");
+            string path = @"c:\temp\a";
+            try
+            {
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
 
-            _watcher.Created += FileCreated;
+                _watcher = new FileSystemWatcher(path, "*_in.txt");
 
-            _watcher.IncludeSubdirectories = false;
+                _watcher.Created += FileCreated;
 
-            _watcher.EnableRaisingEvents = true;
+                _watcher.IncludeSubdirectories = false;
+
+                _watcher.EnableRaisingEvents = true;
+
+            }
+            catch (Exception exception)
+            {
+                _log.InfoFormat(exception.ToString());
+            }
+
 
             return true;
         }
